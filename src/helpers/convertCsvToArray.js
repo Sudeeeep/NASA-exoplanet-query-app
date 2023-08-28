@@ -1,17 +1,27 @@
 export default function convertCsvToArray(csvData) {
-  const result = []; // result array to return the converted data
-  const lines = csvData.split("\n"); // Array containing all the lines in the csv file
-  const headers = lines[0].split(","); // Array of just the headers from csv file
+  // result array to return the converted data
+  const result = [];
+
+  // Array containing all the lines in the csv file
+  const lines = csvData.split("\n");
+
+  // Array of just the headers from csv file
+  const headers = lines[0].split(",");
 
   for (let i = 1; i < lines.length; i++) {
-    let currentObj = {}; //object to store inside the result array
-    let currentLineArr = lines[i].split(","); //Array containing the comma separated values in each line
+    //object to store inside the result array
+    let currentObj = {};
+
+    //Array containing the comma separated values in each line
+    let currentLineArr = lines[i].split(",");
 
     for (let j = 0; j < headers.length; j++) {
-      currentObj[headers[j]] = currentLineArr[j]; //assigning each to it's corresponding header
+      //assigning each to it's corresponding header
+      currentObj[headers[j]] = currentLineArr[j];
     }
 
-    result.push(currentObj); // push the current object into result array
+    // push the current object into result array
+    result.push(currentObj);
   }
 
   return result;
