@@ -2,14 +2,25 @@ import { Query } from "./components/Query";
 import useFetchCsv from "./hooks/useFetchCsv";
 
 function App() {
-  const data = useFetchCsv(); //custom hook to fetch and parse csv data
-  console.log(data);
+  //custom hook to fetch and parse csv data
+  const { data, hostName, discoveryMethod, discoveryYear, discoveryFacility } =
+    useFetchCsv();
 
-  return (
-    <>
-      <Query data={data} />
-    </>
-  );
+  console.log([...new Set(discoveryMethod)]);
+
+  if (data) {
+    return (
+      <>
+        <Query
+          data={data}
+          hostName={hostName}
+          discoveryMethod={discoveryMethod}
+          discoveryYear={discoveryYear}
+          discoveryFacility={discoveryFacility}
+        />
+      </>
+    );
+  }
 }
 
 export default App;

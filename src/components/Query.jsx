@@ -1,4 +1,12 @@
-export const Query = () => {
+import PropTypes from "prop-types";
+
+export const Query = ({
+  data,
+  hostName,
+  discoveryMethod,
+  discoveryYear,
+  discoveryFacility,
+}) => {
   return (
     <>
       <div className="flex justify-center mt-5 gap-2">
@@ -8,9 +16,16 @@ export const Query = () => {
           defaultValue="Host Name"
           className="w-[15%] py-4 pl-2 rounded-md"
         >
-          <option value="Host Name" className="appearance-none py-4 pl-2">
-            Host Name
-          </option>
+          <option value="Host Name">Host Name</option>
+          {[...new Set(hostName)].map((item, index) => {
+            if (item) {
+              return (
+                <option value={item} key={index}>
+                  {item}
+                </option>
+              );
+            }
+          })}
         </select>
 
         <select
@@ -20,6 +35,15 @@ export const Query = () => {
           className="w-[15%] py-4 pl-2 rounded-md"
         >
           <option value="Discovery Method">Discovery Method</option>
+          {[...new Set(discoveryMethod)].map((item, index) => {
+            if (item) {
+              return (
+                <option value={item} key={index}>
+                  {item}
+                </option>
+              );
+            }
+          })}
         </select>
 
         <select
@@ -29,6 +53,15 @@ export const Query = () => {
           className="w-[15%] py-4 pl-2 rounded-md"
         >
           <option value="Discovery Year">Discovery Year</option>
+          {[...new Set(discoveryYear)].map((item, index) => {
+            if (item) {
+              return (
+                <option value={item} key={index}>
+                  {item}
+                </option>
+              );
+            }
+          })}
         </select>
 
         <select
@@ -38,6 +71,15 @@ export const Query = () => {
           className="w-[15%] py-4 pl-2 rounded-md"
         >
           <option value="Discovery Facility">Discovery Facility</option>
+          {[...new Set(discoveryFacility)].map((item, index) => {
+            if (item) {
+              return (
+                <option value={item} key={index}>
+                  {item}
+                </option>
+              );
+            }
+          })}
         </select>
 
         <div className="my-auto">
@@ -62,4 +104,12 @@ export const Query = () => {
       </div>
     </>
   );
+};
+
+Query.propTypes = {
+  data: PropTypes.array,
+  hostName: PropTypes.array,
+  discoveryMethod: PropTypes.array,
+  discoveryYear: PropTypes.array,
+  discoveryFacility: PropTypes.array,
 };
