@@ -6,8 +6,6 @@ function App() {
   const { data, hostName, discoveryMethod, discoveryYear, discoveryFacility } =
     useFetchCsv();
 
-  console.log([...new Set(discoveryMethod)]);
-
   if (data) {
     return (
       <>

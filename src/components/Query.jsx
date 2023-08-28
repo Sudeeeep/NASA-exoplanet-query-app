@@ -1,4 +1,6 @@
 import PropTypes from "prop-types";
+import { useState } from "react";
+import { DataTable } from "./DataTable";
 
 export const Query = ({
   data,
@@ -7,16 +9,76 @@ export const Query = ({
   discoveryYear,
   discoveryFacility,
 }) => {
+  const [hostNameQuery, setHostNameQuery] = useState("");
+  const [discoveryMethodQuery, setDiscoveryMethodQuery] = useState("");
+  const [discoveryYearQuery, setDiscoveryYearQuery] = useState("");
+  const [discoveryFacilityQuery, setDiscoveryFacilityQuery] = useState("");
+  const [filteredData, setFilteredData] = useState();
+  const [error, setError] = useState(false);
+  const [search, setSearch] = useState(false);
+
+  function handleSubmit() {
+    if (
+      hostNameQuery == "" &&
+      discoveryMethodQuery == "" &&
+      discoveryYearQuery == "" &&
+      discoveryFacilityQuery == ""
+    ) {
+      setError(true);
+      setSearch(true);
+    } else {
+      setError(false);
+      setSearch(true);
+      if (
+        hostNameQuery !== "" &&
+        discoveryMethodQuery !== "" &&
+        discoveryYearQuery !== "" &&
+        discoveryFacilityQuery !== ""
+      ) {
+        setFilteredData(
+          data.filter(
+            (item) =>
+              item.hostname === hostNameQuery &&
+              item.discoverymethod === discoveryMethodQuery &&
+              item.disc_year === discoveryYearQuery &&
+              item.disc_facility === discoveryFacilityQuery
+          )
+        );
+      } else {
+        setFilteredData(
+          data.filter(
+            (item) =>
+              item.hostname === hostNameQuery ||
+              item.discoverymethod === discoveryMethodQuery ||
+              item.disc_year === discoveryYearQuery ||
+              item.disc_facility === discoveryFacilityQuery
+          )
+        );
+      }
+    }
+  }
+
+  function handleClear() {
+    setHostNameQuery("");
+    setDiscoveryMethodQuery("");
+    setDiscoveryYearQuery("");
+    setDiscoveryFacilityQuery("");
+    setSearch(false);
+  }
+
   return (
     <>
       <div className="flex justify-center mt-5 gap-2">
         <select
           name="host-name"
           id="host-name-select"
-          defaultValue="Host Name"
+          value={hostNameQuery}
+          onChange={(e) => {
+            setHostNameQuery(e.target.value);
+          }}
           className="w-[15%] py-4 pl-2 rounded-md"
         >
-          <option value="Host Name">Host Name</option>
+          <option value="">Host Name</option>
           {[...new Set(hostName)].map((item, index) => {
             if (item) {
               return (
@@ -31,7 +93,10 @@ export const Query = ({
         <select
           name="discovery-method"
           id="discovery-method-select"
-          defaultValue="Discovery Method"
+          value={discoveryMethodQuery}
+          onChange={(e) => {
+            setDiscoveryMethodQuery(e.target.value);
+          }}
           className="w-[15%] py-4 pl-2 rounded-md"
         >
           <option value="Discovery Method">Discovery Method</option>
@@ -49,11 +114,12 @@ export const Query = ({
         <select
           name="discovery-year"
           id="discovery-year-select"
-          defaultValue="Discovery Year"
+          value={discoveryYearQuery}
+          onChange={(e) => setDiscoveryYearQuery(e.target.value)}
           className="w-[15%] py-4 pl-2 rounded-md"
         >
           <option value="Discovery Year">Discovery Year</option>
-          {[...new Set(discoveryYear)].map((item, index) => {
+          {[...new Set(discoveryYear)].sort().map((item, index) => {
             if (item) {
               return (
                 <option value={item} key={index}>
@@ -67,10 +133,11 @@ export const Query = ({
         <select
           name="discovery-facility"
           id="discovery-facility-select"
-          defaultValue="Discovery Facility"
+          value={discoveryFacilityQuery}
+          onChange={(e) => setDiscoveryFacilityQuery(e.target.value)}
           className="w-[15%] py-4 pl-2 rounded-md"
         >
-          <option value="Discovery Facility">Discovery Facility</option>
+          <option value="">Discovery Facility</option>
           {[...new Set(discoveryFacility)].map((item, index) => {
             if (item) {
               return (
@@ -83,25 +150,22 @@ export const Query = ({
         </select>
 
         <div className="my-auto">
-          <button className="bg-[#395899] text-white px-4 py-1 rounded-md ml-2 mr-4">
+          <button
+            className="bg-[#395899] text-white px-4 py-1 rounded-md ml-2 mr-4"
+            onClick={handleSubmit}
+          >
             Search
           </button>
-          <button className="bg-[#395899] text-white px-4 py-1 rounded-md">
+          <button
+            className="bg-[#395899] text-white px-4 py-1 rounded-md"
+            onClick={handleClear}
+          >
             Clear
           </button>
         </div>
       </div>
 
-      <div className="w-full mx-auto mt-48 font-bold">
-        <p className="text-center">
-          Exoplanets are planets outside the Solar System.
-        </p>
-        <p className="text-center">
-          Here you can query{" "}
-          <span className="text-[#325e8d]">NASA&apos;s Exoplanet Archive</span>{" "}
-          and find the one you love the most.
-        </p>
-      </div>
+      <DataTable filteredData={filteredData} search={search} error={error} />
     </>
   );
 };
