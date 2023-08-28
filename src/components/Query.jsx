@@ -14,7 +14,7 @@ export const Query = ({
   const [discoveryYearQuery, setDiscoveryYearQuery] = useState("");
   const [discoveryFacilityQuery, setDiscoveryFacilityQuery] = useState("");
   const [filteredData, setFilteredData] = useState();
-  const [error, setError] = useState(false);
+  const [error, setError] = useState(null);
   const [search, setSearch] = useState(false);
 
   function handleSubmit() {
@@ -24,37 +24,32 @@ export const Query = ({
       discoveryYearQuery == "" &&
       discoveryFacilityQuery == ""
     ) {
-      setError(true);
+      setError("Please select atleast one query to show results");
       setSearch(true);
     } else {
-      setError(false);
+      setFilteredData(
+        data.filter(
+          (item) =>
+            (hostNameQuery === "" ? true : hostNameQuery === item.hostname) &&
+            (discoveryMethodQuery === ""
+              ? true
+              : discoveryMethodQuery === item.discoverymethod) &&
+            (discoveryYearQuery === ""
+              ? true
+              : discoveryYearQuery === item.disc_year) &&
+            (discoveryFacilityQuery === ""
+              ? true
+              : discoveryFacilityQuery === item.disc_facility)
+        )
+      );
+      setError("");
       setSearch(true);
-      if (
-        hostNameQuery !== "" &&
-        discoveryMethodQuery !== "" &&
-        discoveryYearQuery !== "" &&
-        discoveryFacilityQuery !== ""
-      ) {
-        setFilteredData(
-          data.filter(
-            (item) =>
-              item.hostname === hostNameQuery &&
-              item.discoverymethod === discoveryMethodQuery &&
-              item.disc_year === discoveryYearQuery &&
-              item.disc_facility === discoveryFacilityQuery
-          )
-        );
-      } else {
-        setFilteredData(
-          data.filter(
-            (item) =>
-              item.hostname === hostNameQuery ||
-              item.discoverymethod === discoveryMethodQuery ||
-              item.disc_year === discoveryYearQuery ||
-              item.disc_facility === discoveryFacilityQuery
-          )
-        );
-      }
+
+      console.log(filteredData);
+      console.log("host" + hostNameQuery);
+      console.log(discoveryMethodQuery);
+      console.log("year" + discoveryYearQuery);
+      console.log("facility" + discoveryFacilityQuery);
     }
   }
 
@@ -64,6 +59,7 @@ export const Query = ({
     setDiscoveryYearQuery("");
     setDiscoveryFacilityQuery("");
     setSearch(false);
+    setError("");
   }
 
   return (
@@ -99,7 +95,7 @@ export const Query = ({
           }}
           className="w-[15%] py-4 pl-2 rounded-md"
         >
-          <option value="Discovery Method">Discovery Method</option>
+          <option value="">Discovery Method</option>
           {[...new Set(discoveryMethod)].map((item, index) => {
             if (item) {
               return (
@@ -118,7 +114,7 @@ export const Query = ({
           onChange={(e) => setDiscoveryYearQuery(e.target.value)}
           className="w-[15%] py-4 pl-2 rounded-md"
         >
-          <option value="Discovery Year">Discovery Year</option>
+          <option value="">Discovery Year</option>
           {[...new Set(discoveryYear)].sort().map((item, index) => {
             if (item) {
               return (
@@ -165,7 +161,12 @@ export const Query = ({
         </div>
       </div>
 
-      <DataTable filteredData={filteredData} search={search} error={error} />
+      <DataTable
+        filteredData={filteredData}
+        search={search}
+        error={error}
+        setError={setError}
+      />
     </>
   );
 };

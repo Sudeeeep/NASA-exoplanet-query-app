@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 
-export const DataTable = ({ filteredData, search, error }) => {
+export const DataTable = ({ filteredData, search, error, setError }) => {
   if (!search) {
     return (
       <div className="w-full mx-auto mt-48 font-bold">
@@ -19,60 +19,65 @@ export const DataTable = ({ filteredData, search, error }) => {
   if (error) {
     return (
       <div className="w-full mx-auto mt-48 font-bold">
-        <p className="text-center">
-          Please select atleast one query to show results
-        </p>
+        <p className="text-center">{error}</p>
       </div>
     );
   }
 
-  if (filteredData !== []) {
-    return (
-      <div>
-        <table className="mx-auto mt-10 border border-black">
-          <thead className="border border-black">
-            <tr>
-              <th className="border border-black p-2">Planet Name</th>
-              <th className="border border-black p-2">Host Name</th>
-              <th className="border border-black p-2">Discovery Method</th>
-              <th className="border border-black p-2">Discovery Year</th>
-              <th className="border border-black p-2">Discovery Facility</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredData.map((item, index) => (
-              <tr key={index}>
-                <td className="border border-black p-2">
-                  <a
-                    href={`https://exoplanetarchive.ipac.caltech.edu/overview/${item.pl_name}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="underline"
-                  >
-                    {item.pl_name}
-                  </a>
-                </td>
+  if (filteredData) {
+    if (filteredData.length === 0) {
+      setError("no results found");
+    }
 
-                <td className="border border-black p-2">{item.hostname}</td>
-                <td className="border border-black p-2">
-                  {" "}
-                  {item.discoverymethod}
-                </td>
-                <td className="border border-black p-2">{item.disc_year}</td>
-                <td className="border border-black p-2">
-                  {item.disc_facility}
-                </td>
+    if (filteredData.length > 0) {
+      return (
+        <div>
+          <table className="mx-auto mt-10 border border-black">
+            <thead className="border border-black">
+              <tr>
+                <th className="border border-black p-2">Planet Name</th>
+                <th className="border border-black p-2">Host Name</th>
+                <th className="border border-black p-2">Discovery Method</th>
+                <th className="border border-black p-2">Discovery Year</th>
+                <th className="border border-black p-2">Discovery Facility</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    );
+            </thead>
+            <tbody>
+              {filteredData.map((item, index) => (
+                <tr key={index}>
+                  <td className="border border-black p-2">
+                    <a
+                      href={`https://exoplanetarchive.ipac.caltech.edu/overview/${item.pl_name}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="underline"
+                    >
+                      {item.pl_name}
+                    </a>
+                  </td>
+
+                  <td className="border border-black p-2">{item.hostname}</td>
+                  <td className="border border-black p-2">
+                    {" "}
+                    {item.discoverymethod}
+                  </td>
+                  <td className="border border-black p-2">{item.disc_year}</td>
+                  <td className="border border-black p-2">
+                    {item.disc_facility}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      );
+    }
   }
 };
 
 DataTable.propTypes = {
   filteredData: PropTypes.array,
   search: PropTypes.bool,
-  error: PropTypes.bool,
+  error: PropTypes.string,
+  setError: PropTypes.func,
 };
