@@ -44,12 +44,6 @@ export const Query = ({
       );
       setError("");
       setSearch(true);
-
-      console.log(filteredData);
-      console.log("host" + hostNameQuery);
-      console.log(discoveryMethodQuery);
-      console.log("year" + discoveryYearQuery);
-      console.log("facility" + discoveryFacilityQuery);
     }
   }
 
